@@ -5,11 +5,13 @@ import java.io.File
 import java.net.URL
 import java.time.Duration
 
+import cn.hutool.core.util.EnumUtil
 import javax.imageio.ImageIO
 import com.testerhome.appcrawler.{AppCrawler, CommonLog, DataObject, URIElement}
 import com.testerhome.appcrawler._
 import io.appium.java_client.{AppiumDriver, TouchAction}
 import io.appium.java_client.android.AndroidDriver
+import io.appium.java_client.android.nativekey.{AndroidKey, KeyEvent}
 import io.appium.java_client.ios.IOSDriver
 import io.appium.java_client.touch.offset.PointOption
 import org.apache.log4j.Level
@@ -122,13 +124,27 @@ class AppiumClient extends CommonLog with WebBrowser with WebDriver {
     driver match {
       case androidDriver: AndroidDriver[WebElement] => {
         log.info(s"send event ${keycode}")
-        androidDriver.pressKeyCode(keycode)
+        //        androidDriver.pressKeyCode()
+        androidDriver.pressKey(new KeyEvent(getKey(keycode)))
       }
       case iosDriver: IOSDriver[_] => {
         log.error("no event for ios")
       }
     }
   }
+
+  def getKey(i: Int): AndroidKey = {
+    var x = AndroidKey.A;
+    EnumUtil.getNameFieldMap(classOf[AndroidKey], "code").forEach(
+      (k, v) => {
+        if (i == v) {
+          x = AndroidKey.valueOf(k)
+        }
+      }
+    )
+    return x;
+  }
+
 
   def attribute(key: String): String = {
     nodes().head.get(key).get.toString
@@ -158,14 +174,17 @@ class AppiumClient extends CommonLog with WebBrowser with WebDriver {
     if (capabilities.getCapability("deviceName") == null || capabilities.getCapability("deviceName").toString.isEmpty) {
       config("deviceName", "demo")
     }
+
     if (
       capabilities.getCapability("app").toString.matches(".*\\.apk$") ||
         capabilities.getCapability("appActivity") != null ||
         capabilities.getCapability("appPackage") != null
     ) {
+      println("AndroidDriver")
       driver = new AndroidDriver[WebElement](new URL(url), capabilities)
       setPlatformName("android")
     } else {
+      println("IOSDriver")
       driver = new IOSDriver[WebElement](new URL(url), capabilities)
       setPlatformName("ios")
     }
@@ -279,7 +298,11 @@ class AppiumClient extends CommonLog with WebBrowser with WebDriver {
     }*/
 
   override def tap(): this.type = {
-    driver.performTouchAction(new TouchAction(driver).tap(PointOption.point(currentElement.getLocation.x, currentElement.getLocation.y)))
+    val r = currentElement.getRect
+    val x = r.x + r.width / 2
+    val y = r.y + r.height / 2
+    driver.performTouchAction(new TouchAction(driver).tap(PointOption.point(x, y)))
+    //    driver.performTouchAction(new TouchAction(driver).tap(PointOption.point(currentElement.getLocation.x, currentElement.getLocation.y)))
     this
   }
 
@@ -291,6 +314,8 @@ class AppiumClient extends CommonLog with WebBrowser with WebDriver {
   override def back(): Unit = {
     log.info("navigate back")
     driver.navigate().back()
+    //    KEYCODE_BACK 返回键 4
+    //    event(4);
   }
 
   override def backApp(): Unit = {
@@ -391,6 +416,7 @@ class AppiumClient extends CommonLog with WebBrowser with WebDriver {
     */
     //todo: 用其他定位方式优化
     log.info(s"find by xpath= ${element.loc}")
+    //    log.info(driver.getPageSource)
     retry(driver.findElementsByXPath(element.loc)) match {
       case Some(v) => {
         val arr = v.toArray().distinct

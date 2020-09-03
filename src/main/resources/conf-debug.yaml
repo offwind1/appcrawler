@@ -1,0 +1,103 @@
+---
+logLevel: "TRACE"
+saveScreen: true
+showCancel: true
+reportTitle: test
+screenshotTimeout: 20
+tagLimitMax: 3
+currentDriver: "android"
+maxTime: 10800
+resultDir: ""
+capability:
+  newCommandTimeout: 120
+  launchTimeout: 120000
+  platformVersion: ""
+  platformName: ""
+  autoWebview: "false"
+  autoLaunch: "true"
+  noReset: "false"
+  verbose: false
+androidCapability:
+  platformName: Android
+  deviceName: '480a9444'
+  appPackage: "com.mizholdings.me2.cloudclass.debug"
+  appActivity: "com.mizholdings.orange.function.splash.SplashActivity"
+  app: ""
+  appium: "http://127.0.0.1:4723/wd/hub"
+  fullReset: false
+  noReset: true
+  dontStopAppOnReset: true
+  automationName: uiautomator2
+#defineUrl:
+#- "//*[@selected='true']/@text"
+#- "//*[@selected='true']/@text"
+#- "//*[contains(name(), 'NavigationBar')]/@label"
+#baseUrl:
+#- ".*MainActivity"
+#- ".*SNBHomeView.*"
+maxDepth: 8
+headFirst: true
+enterWebView: true
+#urlBlackList:
+
+backButton:
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/close_accountLogin']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_searchCancel']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/toolbar_back']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/close_choiceGrade']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/toolbar_lessonDetails']/*[@class='android.widget.ImageButton']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/toolbar_userDetails']/*[@class='android.widget.ImageButton']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/close_payDialog']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/empty_btn']
+
+selectedList:
+  #android非空标签
+  - //*[contains(name(), 'Text')]
+  - //*[contains(name(), 'Image')]
+  - //*[contains(name(), 'Button')]
+  - //*[contains(name(), 'CheckBox')]
+  - //*[@clickable='true' and not(contains(name(), 'Layout'))] #//android.widget.TextView[string-length(@text)>0 and string-length(@text)<20]
+
+lastList:
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/btn_choiceGrade']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_tab_title']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_toolbar_subtitle']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/rg_mainTab']/*/*[@class="android.widget.RadioButton"]
+
+blackList:
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/action_share']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/iv_qqLogin']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/btn_kaCha']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/iv_userShare']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/iv_toolbar_subtitle']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/share_weChat']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/share_weChatCircle']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/share_copyLink']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_ali']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_wechat']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/iv_userScan']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/btn_learningReport']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/btn_payConfirm']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/bg_orangeCustom']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/iv_orangeCustom']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_orangeCustom']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_tv_orangeCustomContent']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/line_custom_service']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/title']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_pointTime']
+  - ".*相册.*"
+  - ".*拍照.*"
+
+triggerActions:
+  - xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_province' and @text='浙江省']"
+    times: 1
+  - action: "robot0333"
+    xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/et_loginAccount']"
+    times: 1
+  - action: "111111"
+    xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/et_loginPassword']"
+    times: 1
+  - xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/btn_login']"
+    times: 1
+  - xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.debug:id/tv_submit']"
+    times: 99

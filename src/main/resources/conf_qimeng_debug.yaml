@@ -22,8 +22,8 @@ capability:
   verbose: false
 androidCapability:
   platformName: Android
-  deviceName: 'VLG4C16B25010769'
-  appPackage: "com.mizholdings.me2.cloundclass"
+  deviceName: '43b24d7a'
+  appPackage: "com.mizholdings.me2.cloudclass.sevenlemon"
   appActivity: "com.mizholdings.orange.function.splash.SplashActivity"
   app: ""
   appium: "http://127.0.0.1:4723/wd/hub"
@@ -44,14 +44,14 @@ enterWebView: true
 #urlBlackList:
 
 backButton:
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/close_accountLogin']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_searchCancel']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/toolbar_back']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/close_choiceGrade']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/toolbar_lessonDetails']/*[@class='android.widget.ImageButton']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/toolbar_userDetails']/*[@class='android.widget.ImageButton']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/close_payDialog']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/empty_btn']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/close_accountLogin']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_searchCancel']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/toolbar_back']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/close_choiceGrade']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/toolbar_lessonDetails']/*[@class='android.widget.ImageButton']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/toolbar_userDetails']/*[@class='android.widget.ImageButton']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/close_payDialog']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/empty_btn']
 #- //*[@name='Back']
 #- //*[@name='返回']
 #- "//*[contains(name(), 'Button') and @name='取消']"
@@ -59,7 +59,7 @@ backButton:
 #- "//*[contains(name(), 'Button') and @name='关闭']"
 #- "//*[contains(name(), 'Button') and @name='首页']"
 #firstList:
-#  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_submit']
+#  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_submit']
 #- "//*[contains(name(), 'Popover')]//*"
 #- "//*[contains(name(), 'Window')][3]//*"
 #- "//*[contains(name(), 'Window')][2]//*"
@@ -79,10 +79,10 @@ selectedList:
 #todo:如果多个规则都包含相同控件, 如何排序
 #处于选中状态的同级控件最后点击
 lastList:
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/btn_choiceGrade']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_tab_title']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_toolbar_subtitle']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/rg_mainTab']/*/*[@class="android.widget.RadioButton"]
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/btn_choiceGrade']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_tab_title']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_toolbar_subtitle']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/rg_mainTab']/*/*[@class="android.widget.RadioButton"]
 #- //*[contains(@resource-id, 'header')]//*
 #- //*[contains(@resource-id, 'indicator')]//*
 ##股票 组合
@@ -98,26 +98,25 @@ lastList:
 ##tab低栏
 #- //*[contains(@resource-id,'tabs')]//*
 blackList:
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/action_share']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/iv_qqLogin']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/btn_kaCha']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/iv_userShare']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/iv_toolbar_subtitle']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/share_weChat']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/share_weChatCircle']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/share_copyLink']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_ali']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_wechat']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/iv_userScan']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/btn_learningReport']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/btn_payConfirm']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/bg_orangeCustom']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/iv_orangeCustom']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_orangeCustom']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_tv_orangeCustomContent']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/line_custom_service']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/title']
-  - //*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_pointTime']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/action_share']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/iv_qqLogin']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/btn_kaCha']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/iv_userShare']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/iv_toolbar_subtitle']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/share_weChat']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/share_weChatCircle']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/share_copyLink']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_ali']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_wechat']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/iv_userScan']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/btn_learningReport']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/btn_payConfirm']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/bg_orangeCustom']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/iv_orangeCustom']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_orangeCustom']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_tv_orangeCustomContent']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/line_custom_service']
+  - //*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/title']
   - ".*相册.*"
   - ".*拍照.*"
 ##排除掉ios的状态栏
@@ -163,17 +162,17 @@ blackList:
 #- "球友.*"
 #- ".*开户.*"
 triggerActions:
-  - xpath: "//*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_province' and @text='浙江省']"
+  - xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_province' and @text='浙江省']"
     times: 1
-  - action: "mz0072"
-    xpath: "//*[@resource-id='com.mizholdings.me2.cloundclass:id/et_loginAccount']"
-    times: 5
+  - action: "robot0222"
+    xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/et_loginAccount']"
+    times: 1
   - action: "111111"
-    xpath: "//*[@resource-id='com.mizholdings.me2.cloundclass:id/et_loginPassword']"
-    times: 5
-  - xpath: "//*[@resource-id='com.mizholdings.me2.cloundclass:id/btn_login']"
-    times: 5
-  - xpath: "//*[@resource-id='com.mizholdings.me2.cloundclass:id/tv_submit']"
+    xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/et_loginPassword']"
+    times: 1
+  - xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/btn_login']"
+    times: 1
+  - xpath: "//*[@resource-id='com.mizholdings.me2.cloudclass.sevenlemon:id/tv_submit']"
     times: 99
 #- action: "15600534760"
 #  xpath: "//*[contains(name(), 'StaticText') and contains(@name, '登录')]"

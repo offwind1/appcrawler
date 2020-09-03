@@ -19,6 +19,10 @@
             <id>bintray-ivanyu-bintray-hello-world-repo</id>
             <url>https://dl.bintray.com/xudafeng/maven/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
 
@@ -28,10 +32,12 @@
             <artifactId>scala-library</artifactId>
             <version>2.12.6</version>
         </dependency>
+
         <dependency>
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
-            <version>6.1.0</version>
+            <version>7.2.0</version>
+<!--            <version>6.1.0</version>-->
         </dependency>
 
         <dependency>
@@ -64,6 +70,7 @@
             <artifactId>jackson-module-scala_2.12</artifactId>
             <version>2.9.5</version>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
@@ -194,6 +201,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.0.7</version>
         </dependency>
 
         <dependency>

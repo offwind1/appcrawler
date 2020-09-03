@@ -14,10 +14,10 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 /**
-  * Created by seveniruby on 16/3/26.
-  */
+ * Created by seveniruby on 16/3/26.
+ */
 object XPathUtil extends CommonLog {
-  var xpathExpr=List("name", "label", "value", "resource-id", "content-desc", "class", "text", "index")
+  var xpathExpr = List("name", "label", "value", "resource-id", "content-desc", "class", "text", "index")
 
   def toDocument(raw: String): Document = {
     val builderFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
@@ -42,15 +42,16 @@ object XPathUtil extends CommonLog {
     out.toString
   }
 
-  def setXPathExpr(expr:List[String]): Unit ={
-    xpathExpr=expr
+  def setXPathExpr(expr: List[String]): Unit = {
+    xpathExpr = expr
   }
+
   /**
-    * 从属性中获取xpath的唯一表达式
-    *
-    * @param attributes
-    * @return
-    */
+   * 从属性中获取xpath的唯一表达式
+   *
+   * @param attributes
+   * @return
+   */
   def getXPathFromAttributes(attributes: ListBuffer[Map[String, String]]): String = {
     var xpath = attributes.takeRight(4).map(attribute => {
       var newAttribute = attribute
@@ -70,10 +71,9 @@ object XPathUtil extends CommonLog {
       if (newAttribute.getOrElse("content-desc", "") == newAttribute.getOrElse("resource-id", "")) {
         newAttribute = newAttribute - "content-desc"
       }
-      if(newAttribute.getOrElse("resource-id", "").nonEmpty){
-        newAttribute=Map("resource-id"-> newAttribute.getOrElse("resource-id", "") )
+      if (newAttribute.getOrElse("resource-id", "").nonEmpty) {
+        newAttribute = Map("resource-id" -> newAttribute.getOrElse("resource-id", ""))
       }
-
 
       var xpathSingle = newAttribute.map(kv => {
         //todo: appium的bug. 如果控件内有换行getSource会自动去掉换行. 但是xpath表达式里面没换行会找不到元素
@@ -82,30 +82,12 @@ object XPathUtil extends CommonLog {
         kv._1 match {
           case "tag" => ""
           //case "index" => ""
-          case "name" if kv._2.size>50 => ""
-            //todo: 优化长文本的展示
-          case "text" if newAttribute("tag").contains("Button")==false && kv._2.length>10 => ""
+          case "name" if kv._2.size > 50 => ""
+          //todo: 优化长文本的展示
+          case "text" if newAttribute("tag").contains("Button") == false && kv._2.length > 10 => ""
           case key if xpathExpr.contains(key) && kv._2.nonEmpty => s"@${kv._1}=" + "\"" + kv._2.replace("\"", "\\\"") + "\""
           case _ => ""
         }
-        /*
-        if (kv._1 != "tag") {
-          if (kv._1 == "name" && kv._2.size > 50) {
-            log.trace(s"name size too long ${kv._2.size}>20")
-            ""
-          }
-          //只有按钮才需要记录文本, 文本框很容易变化, 不需要记录
-          else if (kv._1 == "text" && kv._2.size > 10 && newAttribute("tag").contains("Button") ) {
-            log.trace(s"text size too long ${kv._2.size}>10")
-            s"contains(@text, '${kv._2.split("&")(0).take(10)}')"
-          }
-          else {
-            s"@${kv._1}=" + "\"" + kv._2.replace("\"", "\\\"") + "\""
-          }
-        } else {
-          ""
-        }
-        */
       }).filter(x => x.nonEmpty).mkString(" and ")
 
       //todo: macaca的source有问题
@@ -125,8 +107,9 @@ object XPathUtil extends CommonLog {
     return xpath
   }
 
-  def getAttributesFromNode(node: Node): ListBuffer[Map[String, String]] ={
+  def getAttributesFromNode(node: Node): ListBuffer[Map[String, String]] = {
     val path = ListBuffer[Map[String, String]]()
+
     //递归获取路径,生成可定位的xpath表达式
     def getParent(node: Node): Unit = {
       if (node.hasAttributes) {
@@ -144,6 +127,7 @@ object XPathUtil extends CommonLog {
         getParent(node.getParentNode)
       }
     }
+
     getParent(node)
     //返回一个从root到leaf的属性列表
     return path.reverse
@@ -155,7 +139,7 @@ object XPathUtil extends CommonLog {
     val nodesMap = ListBuffer[Map[String, Any]]()
     val xPath: XPath = XPathFactory.newInstance().newXPath()
     val compexp = xPath.compile(xpath)
-    //val node=compexp.evaluate(pageDom)
+
     val node = if (xpath.matches("string(.*)") || xpath.matches(".*/@[^/]*")) {
       compexp.evaluate(pageDom, XPathConstants.STRING)
     } else {
@@ -174,7 +158,7 @@ object XPathUtil extends CommonLog {
           val node = nodeList.item(i)
           //如果node为.可能会异常. 不过目前不会
           nodeMap("tag") = node.getNodeName
-          val path=getAttributesFromNode(node)
+          val path = getAttributesFromNode(node)
           nodeMap("xpath") = getXPathFromAttributes(path)
           //支持导出单个字段
           nodeMap(node.getNodeName) = node.getNodeValue
@@ -206,16 +190,16 @@ object XPathUtil extends CommonLog {
             nodeMap("label") = nodeMap("content-desc")
           }
 
-          if (nodeMap("xpath").toString.nonEmpty && nodeMap("value").toString().size<50) {
+          if (nodeMap("xpath").toString.nonEmpty && nodeMap("value").toString().size < 50) {
             nodesMap += (nodeMap.toMap)
           } else {
             log.trace(s"xpath error skip ${nodeMap}")
           }
-        } )
+        })
       }
-      case attr:String => {
+      case attr: String => {
         //如果是提取xpath的属性值, 就返回一个简单的结构
-        nodesMap+=Map("attribute"->attr)
+        nodesMap += Map("attribute" -> attr)
       }
     }
     nodesMap.toList

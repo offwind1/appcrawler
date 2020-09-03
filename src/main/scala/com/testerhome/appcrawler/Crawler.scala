@@ -20,10 +20,10 @@ import scala.util.{Failure, Success, Try}
 
 
 /**
-  * Created by seveniruby on 15/11/28.
-  */
+ * Created by seveniruby on 15/11/28.
+ */
 class Crawler extends CommonLog {
-  var driver:WebDriver=_
+  var driver: WebDriver = _
   var conf = new CrawlerConf()
 
   /** 存放插件类 */
@@ -57,8 +57,8 @@ class Crawler extends CommonLog {
   protected val contentHash = new DataRecord
 
   /**
-    * 根据类名初始化插件. 插件可以使用java编写. 继承自Plugin即可
-    */
+   * 根据类名初始化插件. 插件可以使用java编写. 继承自Plugin即可
+   */
   def loadPlugins(): Unit = {
     //todo: 需要考虑默认加载一些插件,并防止重复加载
     val defaultPlugins = List(
@@ -88,8 +88,8 @@ class Crawler extends CommonLog {
   }
 
   /**
-    * 加载配置文件并初始化
-    */
+   * 加载配置文件并初始化
+   */
   def loadConf(crawlerConf: CrawlerConf): Unit = {
     conf = crawlerConf
     log.setLevel(GA.logLevel)
@@ -115,8 +115,8 @@ class Crawler extends CommonLog {
   }
 
   /**
-    * 启动爬虫
-    */
+   * 启动爬虫
+   */
   def start(existDriver: WebDriver = null): Unit = {
     addLogFile()
     log.debug("crawl config")
@@ -144,53 +144,51 @@ class Crawler extends CommonLog {
     //driver.manage().logs().getAvailableLogTypes().toArray.foreach(log.info)
     //设定结果目录
     runStartupScript()
-    println("append current app name to appWhiteList")
+    log.info("append current app name to appWhiteList")
     conf.appWhiteList.append(appNameRecord.last().toString)
 
-    if(conf.testcase!=null){
+    if (conf.testcase != null) {
       log.info("run steps")
       runSteps()
-    }else{
+    } else {
       log.info("no testcase")
     }
 
-    if(conf.autoCrawl){
+    if (conf.autoCrawl) {
       crawl(conf.maxDepth)
-    }else{
+    } else {
       log.info("autoCrawl=false")
     }
 
   }
 
-  def crawl(depth: Int): Unit ={
+  def crawl(depth: Int): Unit = {
     //清空堆栈 开始重新计数
-    conf.maxDepth=depth
+    conf.maxDepth = depth
     urlStack.clear()
     refreshPage()
     handleCtrlC()
 
-    var retryCount=1
-    while(retryCount>0) {
+    var retryCount = 1
+    while (retryCount > 0) {
       Try(crawl()) match {
         case Success(v) => {
           log.info("crawl finish")
 
           //如果错误太多就重试, 错误少就认为是完成了
-
-
           log.info("list last 10 exec results")
-          driver.appiumExecResults.takeRight(10).foreach(x=>log.info(x))
+          driver.appiumExecResults.takeRight(10).foreach(x => log.info(x))
 
           //todo: 需要继续过滤appium的报错
-          val failCount10=driver.appiumExecResults.takeRight(10).filter(_!="success").size
+          val failCount10 = driver.appiumExecResults.takeRight(10).filter(_ != "success").size
           log.info(s"failCount=${failCount10} retryCount=${retryCount}")
-          if(failCount10>10*0.3 && retryCount<10){
+          if (failCount10 > 10 * 0.3 && retryCount < 10) {
             log.error("appium error, restart and continue to crawl ")
-            retryCount+=1
+            retryCount += 1
             restart()
-          }else{
+          } else {
             log.info("success finish")
-            retryCount=0
+            retryCount = 0
           }
         }
         case Failure(e) => {
@@ -201,7 +199,7 @@ class Crawler extends CommonLog {
           ExceptionUtils.getRootCauseStackTrace(e).foreach(log.error)
           log.error("create new session")
 
-          retryCount+=1
+          retryCount += 1
           restart()
         }
       }
@@ -215,9 +213,11 @@ class Crawler extends CommonLog {
 
   def restart(): Unit = {
     log.info("restart appium")
-    backRetry=0
+    backRetry = 0
     log.info("set app to null to restart appium")
-    conf.capability ++= Map("app"->"")
+//    conf.capability ++= Map("app" -> "")
+    driver.stop()
+
     setupAppium()
     //todo: 采用轮询
     Thread.sleep(8000)
@@ -233,9 +233,9 @@ class Crawler extends CommonLog {
 
   }
 
-  def runSteps(): Unit ={
+  def runSteps(): Unit = {
     log.info("run testcases")
-    new AutomationSuite().execute("run steps", ConfigMap("crawler"->this))
+    new AutomationSuite().execute("run steps", ConfigMap("crawler" -> this))
   }
 
   def setupAppium(): Unit = {
@@ -246,19 +246,19 @@ class Crawler extends CommonLog {
     //todo: 主要做遍历测试和异常测试. 所以暂不使用selendroid
     //todo: Appium模式太慢
 
-    val url=conf.capability("appium").toString
+    val url = conf.capability("appium").toString
     conf.capability.getOrElse("automationName", "").toString match {
       case "macaca" => {
         log.info("use macaca")
-        driver=new MacacaDriver(url, conf.capability)
+        driver = new MacacaDriver(url, conf.capability)
       }
       case _ => {
         log.info("use AppiumClient")
-        driver=new AppiumClient(url, conf.capability)
+        driver = new AppiumClient(url, conf.capability)
       }
     }
 
-    GA.log(conf.capability.getOrElse("appPackage", "")+conf.capability.getOrElse("bundleId", "").toString)
+    GA.log(conf.capability.getOrElse("appPackage", "") + conf.capability.getOrElse("bundleId", "").toString)
 
   }
 
@@ -276,10 +276,10 @@ class Crawler extends CommonLog {
 
 
   /**
-    * 判断内容是否变化
-    *
-    * @return
-    */
+   * 判断内容是否变化
+   *
+   * @return
+   */
   def getContentHash(): String = {
     //var nodeList = driver.getListFromXPath("//*[not(ancestor-or-self::UIATableView)]")
     //nodeList = nodeList intersect driver.getListFromXPath("//*[not(ancestor-or-self::android.widget.ListView)]")
@@ -301,15 +301,15 @@ class Crawler extends CommonLog {
   }
 
   /**
-    * 获得布局Hash
-    */
+   * 获得布局Hash
+   */
   def getSchema(): String = {
     val nodeList = driver.getListFromXPath("//*[not(ancestor-or-self::UIAStatusBar)]")
     md5(nodeList.map(getUrlElementByMap(_).toTagPath()).distinct.mkString("\n"))
   }
 
   def getUrl(): String = {
-    val baseUrl=if (conf.defineUrl.nonEmpty) {
+    val baseUrl = if (conf.defineUrl.nonEmpty) {
       val urlString = conf.defineUrl.flatMap(driver.getListFromXPath(_)).distinct.map(x => {
         //按照attribute, label, name顺序挨个取第一个非空的指
         log.debug(x)
@@ -325,7 +325,7 @@ class Crawler extends CommonLog {
       }).filter(_.toString.nonEmpty).mkString("-")
       log.info(s"defineUrl=$urlString")
       urlString
-    }else{
+    } else {
       ""
     }
     List(driver.getAppName(), driver.getUrl(), baseUrl).distinct.filter(_.nonEmpty).mkString("-")
@@ -333,11 +333,11 @@ class Crawler extends CommonLog {
   }
 
   /**
-    * 获取控件的基本属性并设置一个唯一的uid作为识别. screenName+id+name
-    *
-    * @param x
-    * @return
-    */
+   * 获取控件的基本属性并设置一个唯一的uid作为识别. screenName+id+name
+   *
+   * @param x
+   * @return
+   */
   def getUrlElementByMap(x: immutable.Map[String, Any]): URIElement = {
     //控件的类型
     val tag = x.getOrElse("tag", "NoTag").toString
@@ -358,7 +358,7 @@ class Crawler extends CommonLog {
     log.trace(appNameRecord.last(10))
 
     //跳到了其他app. 排除点一次就没有的弹框
-    if (conf.appWhiteList.forall(appNameRecord.last().toString.matches(_)==false)) {
+    if (conf.appWhiteList.forall(appNameRecord.last().toString.matches(_) == false)) {
       log.warn(s"not in app white list ${conf.appWhiteList}")
       log.warn(s"jump to other app appName=${appNameRecord.last()} lastAppName=${appNameRecord.pre()}")
       setElementAction("backApp")
@@ -442,32 +442,32 @@ class Crawler extends CommonLog {
       m.getOrElse("valid", "true") == "true"
   }
 
-  def isSmall(m: immutable.Map[String, Any]): Boolean ={
+  def isSmall(m: immutable.Map[String, Any]): Boolean = {
 
-    var res=false
+    var res = false
     //todo: support ios
-    if(m.getOrElse("bounds", "").toString.nonEmpty){
-      val bounds="\\d+".r().findAllIn(m.get("bounds").get.toString).matchData.map(_.group(0)).toList
-      val startX=bounds(0).toInt
-      val startY=bounds(1).toInt
-      val endX=bounds(2).toInt
-      val endY=bounds(3).toInt
-      val width=endX-startX
-      val height=endY-startY
+    if (m.getOrElse("bounds", "").toString.nonEmpty) {
+      val bounds = "\\d+".r().findAllIn(m.get("bounds").get.toString).matchData.map(_.group(0)).toList
+      val startX = bounds(0).toInt
+      val startY = bounds(1).toInt
+      val endX = bounds(2).toInt
+      val endY = bounds(3).toInt
+      val width = endX - startX
+      val height = endY - startY
 
-      if(endY>driver.screenHeight || endX>driver.screenWidth){
+      if (endY > driver.screenHeight || endX > driver.screenWidth) {
         log.info(bounds)
         log.info(driver.screenHeight)
         log.info("not visual")
-        res=true
+        res = true
       }
 
       //高度小就跳过
-      if(height<30 && width<30) {
+      if (height < 30 && width < 30) {
         log.info(bounds)
         log.info(driver.screenHeight)
         log.info("small")
-        res=true
+        res = true
       }
     }
     res
@@ -481,30 +481,33 @@ class Crawler extends CommonLog {
     var selectedElements = List[immutable.Map[String, Any]]()
     var blackElements = List[immutable.Map[String, Any]]()
 
+    log.info(conf.selectedList)
     conf.selectedList.foreach(xpath => {
       log.trace(s"selectedList xpath =  ${xpath}")
       val temp = driver.getListFromXPath(xpath).filter(isValid)
       selectedElements ++= temp
     })
-    selectedElements=selectedElements.distinct
+
+    selectedElements = selectedElements.distinct
     log.info(s"selected nodes size = ${selectedElements.size}")
     selectedElements.map(_.getOrElse("xpath", "no xpath")).foreach(log.trace)
 
     //remove blackList
+    log.info(conf.blackList)
     conf.blackList.foreach(xpath => {
       val temp = driver.getListFromXPath(xpath)
-      temp.foreach(x=>
+      temp.foreach(x =>
         log.info(s"blackList hit ${xpath} ${x}")
       )
       blackElements ++= temp
     })
-    blackElements=blackElements.distinct
+    blackElements = blackElements.distinct
     selectedElements = selectedElements diff blackElements
     log.info(s"all - black elements size = ${selectedElements.size}")
     selectedElements.map(_.getOrElse("xpath", "no xpath")).foreach(log.trace)
 
     //exclude small
-    selectedElements=selectedElements.filter(isSmall(_)==false)
+    selectedElements = selectedElements.filter(isSmall(_) == false)
     log.info(s"all - small elements size = ${selectedElements.size}")
     selectedElements.map(_.getOrElse("xpath", "no xpath")).foreach(log.trace)
 
@@ -580,7 +583,7 @@ class Crawler extends CommonLog {
       }
     } else {
       urlStack.push(currentUrl)
-      if(urlStack.size>2) {
+      if (urlStack.size > 2) {
         saveLog()
       }
     }
@@ -650,8 +653,8 @@ class Crawler extends CommonLog {
   }
 
   /**
-    * 允许插件重新设定当前控件的行为
-    **/
+   * 允许插件重新设定当前控件的行为
+   **/
   def setElementAction(action: String): Unit = {
     log.info(s"set action to ${action}")
     currentElementAction = action
@@ -668,14 +671,14 @@ class Crawler extends CommonLog {
       case Some(v) if appNameRecord.isDiff() == false => {
         //app相同并且找到back控件才点击. 否则就默认back
         val element = getUrlElementByMap(v)
-        val backElement=URIElement(
+        val backElement = URIElement(
           element.url,
           element.tag,
           element.name,
-          element.name+store.getClickedElementsList.map(_.loc==element.loc).size.toString,
+          element.name + store.getClickedElementsList.map(_.loc == element.loc).size.toString,
           element.loc)
         setElementAction("click")
-        backRetry+=1
+        backRetry += 1
         return Some(backElement)
       }
       case _ => {
@@ -701,6 +704,7 @@ class Crawler extends CommonLog {
 
     allElements = allElements.filter(!store.isSkiped(_))
     log.info(s"all - skiped fresh elements size=${allElements.length}")
+
     //记录未被点击的元素
     allElements.foreach(e => {
       log.trace(e)
@@ -710,9 +714,9 @@ class Crawler extends CommonLog {
   }
 
   /**
-    * 优化后的递归方法. 尾递归.
-    * 刷新->找元素->点击第一个未被点击的元素->刷新
-    */
+   * 优化后的递归方法. 尾递归.
+   * 刷新->找元素->点击第一个未被点击的元素->刷新
+   */
   @tailrec
   final def crawl(): Unit = {
     log.info("\n\ncrawl next")
@@ -728,12 +732,12 @@ class Crawler extends CommonLog {
     }
 
     //判断下一步动作
-
     //是否应该退出
     if (needExit()) {
       log.warn("get signal to exit")
       return
     }
+
     //页面刷新失败自动后退
     if (isRefreshSuccess == false) {
       log.warn("refresh fail")
@@ -797,10 +801,10 @@ class Crawler extends CommonLog {
     nextElement match {
       case Some(element) => {
         //todo: 输入情况 长按 需要考虑
-        if(skipBeforeElementAction==false) {
+        if (skipBeforeElementAction == false) {
           //决定是否需要跳过
           beforeElementAction(element)
-        }else{
+        } else {
           log.info("skip beforeElementAction")
         }
 
@@ -827,10 +831,11 @@ class Crawler extends CommonLog {
 
 
   /**
-    * 如果pri=0 表示不用优先匹配. 只有遍历到了再寻找合适的action
-    * @param element
-    * @return
-    */
+   * 如果pri=0 表示不用优先匹配. 只有遍历到了再寻找合适的action
+   *
+   * @param element
+   * @return
+   */
   def getActionFromNormalActions(element: URIElement): String = {
     val normalActions = conf.triggerActions.filter(_.getOrElse("pri", 1).toString.toInt == 0)
     log.info(s"normal actions size = ${normalActions.size}")
@@ -838,11 +843,11 @@ class Crawler extends CommonLog {
       val xpath = r("xpath").toString
       val action = r("action").toString
 
-      driver.getListFromXPath(xpath).toStream.filter(element==getUrlElementByMap(_)).headOption match {
-        case Some(v)=>Some(action)
+      driver.getListFromXPath(xpath).toStream.filter(element == getUrlElementByMap(_)).headOption match {
+        case Some(v) => Some(action)
         case None => None
       }
-    }).filter(_!=None).headOption match {
+    }).filter(_ != None).headOption match {
       case Some(action) => action.get
       case None => "click"
     }
@@ -874,17 +879,15 @@ class Crawler extends CommonLog {
   }
 
 
-
-
   def saveLog(): Unit = {
     //记录点击log
     File(s"${conf.resultDir}/elements.yml").writeAll(DataObject.toYaml(store))
   }
 
-  def getBasePathName(right:Int=1): String = {
+  def getBasePathName(right: Int = 1): String = {
     //序号_文件名
-    val element=store.clickedElementsList.takeRight(right).head
-    s"${conf.resultDir}/${store.clickedElementsList.size-right}_" + element.toFileName()
+    val element = store.clickedElementsList.takeRight(right).head
+    s"${conf.resultDir}/${store.clickedElementsList.size - right}_" + element.toFileName()
   }
 
   def saveDom(): Unit = {
@@ -922,7 +925,7 @@ class Crawler extends CommonLog {
           log.info("ui no change")
           val preImageFileName = getBasePathName(2) + ".clicked.png"
           val preImageFile = new java.io.File(preImageFileName)
-          if (preImageFile.exists() && preImageFileName!=originPath) {
+          if (preImageFile.exists() && preImageFileName != originPath) {
             log.info(s"copy from pre image file ${preImageFileName}")
             //FileUtils.copyFile(preImageFile, markImageFile)
             preImageFile
@@ -930,9 +933,9 @@ class Crawler extends CommonLog {
             driver.screenshot()
           }
         }
-        if(imgFile.getAbsolutePath==new java.io.File(originPath).getAbsolutePath){
+        if (imgFile.getAbsolutePath == new java.io.File(originPath).getAbsolutePath) {
           log.info(s"${imgFile.getAbsolutePath} same as before")
-        }else{
+        } else {
           FileUtils.copyFile(imgFile, new java.io.File(originPath))
         }
       } match {
@@ -997,8 +1000,8 @@ class Crawler extends CommonLog {
       case "monkey" => {
         driver.event(element.name.toInt)
       }
-      case crawl if crawl.contains("crawl\\(.*\\)") =>{
-        store.clickedElementsList.remove(store.clickedElementsList.size-1)
+      case crawl if crawl.contains("crawl\\(.*\\)") => {
+        store.clickedElementsList.remove(store.clickedElementsList.size - 1)
         driver.dsl(crawl)
       }
       case code if code.matches(".*\\(.*\\).*") => {
@@ -1012,7 +1015,7 @@ class Crawler extends CommonLog {
         driver.findElementByUrlElement(element) match {
           case true => {
             val rect = driver.getRect()
-            if(conf.saveScreen) {
+            if (conf.saveScreen) {
               log.info(s"mark ${originImageName} to ${newImageName}")
               driver.mark(originImageName, newImageName, rect.x, rect.y, rect.width, rect.height)
             }
@@ -1044,12 +1047,12 @@ class Crawler extends CommonLog {
       }
     }
 
-    val newImageFile=new io.File(newImageName)
-    val originImageFile=new io.File(originImageName)
-    if(newImageFile.exists()==false && originImageFile.exists()==true){
+    val newImageFile = new io.File(newImageName)
+    val originImageFile = new io.File(originImageName)
+    if (newImageFile.exists() == false && originImageFile.exists() == true) {
       log.info("use last clicked image replace mark")
       FileUtils.copyFile(originImageFile, newImageFile)
-    }else{
+    } else {
       log.info("mark image exist")
     }
 
@@ -1118,7 +1121,7 @@ class Crawler extends CommonLog {
     stopAll = true
     if (signalInt < 2) {
       Try(pluginClasses.foreach(_.stop())) match {
-        case Success(v)=> {}
+        case Success(v) => {}
         case Failure(e) => {
           log.error(e.getMessage)
           log.error(e.getCause)
